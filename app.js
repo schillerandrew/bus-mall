@@ -2,8 +2,7 @@
 
 let productArray = [];
 
-let numberOfVotingRounds = 5;
-// ^ change to 25 later! ^
+let numberOfVotingRounds = 25;
 
 // DOM references
 let imagesDiv = document.getElementById('images');
@@ -98,7 +97,7 @@ function handleImageClick(event){
   if (numberOfVotingRounds === 0) {
     imagesDiv.removeEventListener('click', handleImageClick);
 
-    buttonSeeYourResults.textContent = 'See your results!';
+    buttonSeeYourResults.textContent = 'View Results!';
     resultsSection.appendChild(buttonSeeYourResults);
   }
   renderThreeImages();
@@ -113,6 +112,7 @@ function handleRenderResults() {
       listOfResults.appendChild(liTag);
     }
   }
+  buttonSeeYourResults.removeEventListener('click', handleRenderResults);
 }
 
 // event listeners
