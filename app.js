@@ -2,8 +2,7 @@
 
 let productArray = [];
 
-let numberOfVotingRounds = 5;
-// revert to 25 later!!!!!!!!!!!!!!!!!!!!
+let numberOfVotingRounds = 25;
 
 // DOM references
 let imagesDiv = document.getElementById('images');
