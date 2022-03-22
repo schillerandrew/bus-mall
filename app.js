@@ -2,7 +2,8 @@
 
 let productArray = [];
 
-let numberOfVotingRounds = 25;
+let numberOfVotingRounds = 5;
+// revert to 25 later!!!!!!!!!!!!!!!!!!!!
 
 // DOM references
 let imagesDiv = document.getElementById('images');
@@ -10,9 +11,10 @@ let image1 = document.getElementById('image1');
 let image2 = document.getElementById('image2');
 let image3 = document.getElementById('image3');
 
-let resultsSection = document.getElementById('results');
-let buttonSeeYourResults = document.getElementById('results-button');
-let listOfResults = document.getElementById('results-list');
+// let resultsSection = document.getElementById('results');
+let ctx = document.getElementById('chartOfProducts');
+// let buttonSeeYourResults = document.getElementById('results-button');
+// let listOfResults = document.getElementById('results-list');
 
 // constructor
 function Product(name, filenameExtension = 'jpg') {
@@ -20,7 +22,6 @@ function Product(name, filenameExtension = 'jpg') {
   this.imagePath = `img/${name}.${filenameExtension}`;
   this.numberOfProductViews = 0;
   this.numberOfProductVotes= 0;
-  
 
   productArray.push(this);
 }
@@ -49,22 +50,20 @@ function randomIndexFromProductArray() {
   return Math.floor ( Math.random() * productArray.length );
 }
 
+let thisArrayPreventsDuplicates = [];
+
 function renderThreeImages() {
-  let productIndex1 = randomIndexFromProductArray();
-  let productIndex2 = randomIndexFromProductArray();
-  let productIndex3 = randomIndexFromProductArray();
 
-  while (productIndex1 === productIndex2 || productIndex1 === productIndex3) {
-    productIndex1 = randomIndexFromProductArray();
+  while (thisArrayPreventsDuplicates.length < 6) {
+    let randomNum = randomIndexFromProductArray();
+    if(!thisArrayPreventsDuplicates.includes(randomNum)) {
+      thisArrayPreventsDuplicates.unshift(randomNum);
+    }
   }
 
-  while (productIndex2 === productIndex1 || productIndex2 === productIndex3) {
-    productIndex2 = randomIndexFromProductArray();
-  }
-
-  while (productIndex3 === productIndex1 || productIndex3 === productIndex2) {
-    productIndex3 = randomIndexFromProductArray();
-  }
+  let productIndex1 = thisArrayPreventsDuplicates.pop();
+  let productIndex2 = thisArrayPreventsDuplicates.pop();
+  let productIndex3 = thisArrayPreventsDuplicates.pop();
 
   image1.src = productArray[productIndex1].imagePath;
   image1.alt = productArray[productIndex1].productName;
@@ -81,6 +80,67 @@ function renderThreeImages() {
 
 renderThreeImages();
 
+function renderChart() {
+  let productNames = [];
+
+  let productViews = [];
+  let productVotes = [];
+
+  for (let i = 0; i < productArray.length; i++) {
+    productNames.push(productArray[i].productName);
+    productViews.push(productArray[i].numberOfProductViews);
+    productVotes.push(productArray[i].numberOfProductVotes);
+  }
+
+  let chartObject = {
+    type: 'bar',
+    data: {
+      labels: productNames,
+      datasets: [{
+        label: '# of Views',
+        data: productViews,
+        backgroundColor: [
+          'purple'
+        ],
+        borderColor: [
+          'purple'
+        ],
+        borderWidth: 1
+      },
+      {
+        label: '# of Votes',
+        data: productVotes,
+        backgroundColor: [
+          'blue'
+        ],
+        borderColor: [
+          'blue'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: {
+          labels: {
+            font: {
+              size: 50
+            }
+          }
+        }
+      }
+    }
+  };
+  const chartOfProductViewsAndVotes = new Chart(ctx, chartObject);
+}
+
+
+
 // event handlers
 
 function handleImageClick(event){
@@ -96,25 +156,27 @@ function handleImageClick(event){
   numberOfVotingRounds--;
   if (numberOfVotingRounds === 0) {
     imagesDiv.removeEventListener('click', handleImageClick);
+    renderChart();
+    return;
 
-    buttonSeeYourResults.textContent = 'View Results!';
-    resultsSection.appendChild(buttonSeeYourResults);
+    // buttonSeeYourResults.textContent = 'View Results!';
+    // resultsSection.appendChild(buttonSeeYourResults);
   }
   renderThreeImages();
 }
 
-function handleRenderResults() {
-  if (numberOfVotingRounds === 0) {
-    for (let i = 0; i < productArray.length; i++){
-      let liTag = document.createElement('li');
+// function handleRenderResults() {
+//   if (numberOfVotingRounds === 0) {
+//     for (let i = 0; i < productArray.length; i++){
+//       let liTag = document.createElement('li');
 
-      liTag.textContent = `${productArray[i].productName} was viewed ${productArray[i].numberOfProductViews} times and clicked on ${productArray[i].numberOfProductVotes} times.`;
-      listOfResults.appendChild(liTag);
-    }
-  }
-  buttonSeeYourResults.removeEventListener('click', handleRenderResults);
-}
+//       liTag.textContent = `${productArray[i].productName} was viewed ${productArray[i].numberOfProductViews} times and clicked on ${productArray[i].numberOfProductVotes} times.`;
+//       listOfResults.appendChild(liTag);
+//     }
+//   }
+//   buttonSeeYourResults.removeEventListener('click', handleRenderResults);
+// }
 
 // event listeners
 imagesDiv.addEventListener('click', handleImageClick);
-buttonSeeYourResults.addEventListener('click', handleRenderResults);
+// buttonSeeYourResults.addEventListener('click', handleRenderResults);
