@@ -15,6 +15,14 @@ let ctx = document.getElementById('chartOfProducts');
 // let buttonSeeYourResults = document.getElementById('results-button');
 // let listOfResults = document.getElementById('results-list');
 
+// GET storage
+let retrievedProducts = localStorage.getItem('products');
+
+// PARSE storage
+let parsedProducts = JSON.parse(retrievedProducts);
+
+console.log(parsedProducts);
+
 // constructor
 function Product(name, filenameExtension = 'jpg') {
   this.productName = name;
@@ -25,25 +33,29 @@ function Product(name, filenameExtension = 'jpg') {
   productArray.push(this);
 }
 
-new Product('bag');
-new Product('banana');
-new Product('bathroom');
-new Product('boots');
-new Product('breakfast');
-new Product('bubblegum');
-new Product('chair');
-new Product('cthulhu');
-new Product('dog-duck');
-new Product('dragon');
-new Product('pen');
-new Product('pet-sweep');
-new Product('scissors');
-new Product('shark');
-new Product('sweep', 'png');
-new Product('tauntaun');
-new Product('unicorn');
-new Product('water-can');
-new Product('wine-glass');
+if (retrievedProducts) {
+  productArray = parsedProducts;
+} else {
+  new Product('bag');
+  new Product('banana');
+  new Product('bathroom');
+  new Product('boots');
+  new Product('breakfast');
+  new Product('bubblegum');
+  new Product('chair');
+  new Product('cthulhu');
+  new Product('dog-duck');
+  new Product('dragon');
+  new Product('pen');
+  new Product('pet-sweep');
+  new Product('scissors');
+  new Product('shark');
+  new Product('sweep', 'png');
+  new Product('tauntaun');
+  new Product('unicorn');
+  new Product('water-can');
+  new Product('wine-glass');
+}
 
 function randomIndexFromProductArray() {
   return Math.floor ( Math.random() * productArray.length );
@@ -148,7 +160,6 @@ function handleImageClick(event){
   for (let i = 0; i < productArray.length; i++) {
     if (imageClicked === productArray[i].productName) {
       productArray[i].numberOfProductVotes++;
-      break;
     }
   }
 
@@ -156,8 +167,14 @@ function handleImageClick(event){
   if (numberOfVotingRounds === 0) {
     imagesDiv.removeEventListener('click', handleImageClick);
     renderChart();
-    return;
 
+    // STRINGIFY array
+    let stringifiedProducts = JSON.stringify(productArray);
+
+    // SET array as storage
+    localStorage.setItem('products', stringifiedProducts);
+
+    return;
     // buttonSeeYourResults.textContent = 'View Results!';
     // resultsSection.appendChild(buttonSeeYourResults);
   }
