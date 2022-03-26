@@ -28,7 +28,7 @@ function Product(name, filenameExtension = 'jpg') {
   this.productName = name;
   this.imagePath = `img/${name}.${filenameExtension}`;
   this.numberOfProductViews = 0;
-  this.numberOfProductVotes= 0;
+  this.numberOfProductVotes = 0;
 
   productArray.push(this);
 }
@@ -58,7 +58,7 @@ if (retrievedProducts) {
 }
 
 function randomIndexFromProductArray() {
-  return Math.floor ( Math.random() * productArray.length );
+  return Math.floor(Math.random() * productArray.length);
 }
 
 let thisArrayPreventsDuplicates = [];
@@ -67,7 +67,7 @@ function renderThreeImages() {
 
   while (thisArrayPreventsDuplicates.length < 6) {
     let randomNum = randomIndexFromProductArray();
-    if(!thisArrayPreventsDuplicates.includes(randomNum)) {
+    if (!thisArrayPreventsDuplicates.includes(randomNum)) {
       thisArrayPreventsDuplicates.unshift(randomNum);
     }
   }
@@ -154,7 +154,7 @@ function renderChart() {
 
 // event handlers
 
-function handleImageClick(event){
+function handleImageClick(event) {
   let imageClicked = event.target.alt;
 
   for (let i = 0; i < productArray.length; i++) {
